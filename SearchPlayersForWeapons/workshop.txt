@@ -1,0 +1,12 @@
+version=1
+id=2873010748
+title=Search Players For Weapons
+description=Search Players for Weapons is a multiplayer roleplay mod that allows one player to pat down another player to see if they are concealing any weapons in their inventory.
+description=
+description=It has become pretty commonplace on our server that when entering another faction's compounds you are expected to leave your weapons at a receptacle at the door. 
+description=Backpack searches are easy to perform, however you generally just have to take the other player's word that they're not hiding an assault rifle in their trouser pockets, ready to equip it the moment you let your guard down and rob you for all your nails.
+description=Well, that is now a thing of the past with this mod.
+description=
+description=Have security that the unwashed traveler standing on your doorstep isn't about to get the jump on you inside your living room with Search Players For Weapons
+tags=Build 41;Multiplayer
+visibility=public
