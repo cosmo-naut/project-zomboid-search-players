@@ -26,7 +26,7 @@ function SearchPlayer.createContextOption(player, context, worldObjects)
         local movingObjects = square:getMovingObjects()
         for i = 0, movingObjects:size() - 1 do
             local o = movingObjects:get(i)
-            if instanceof(o, "IsoPlayer") then
+            if instanceof(o, "IsoPlayer") and o ~= playerObj then
                 otherPlayer = o;
                 break
             end
@@ -53,7 +53,7 @@ function SearchPlayer.createContextOption(player, context, worldObjects)
         end
     end
 
-    if otherPlayer and otherPlayer ~= playerObj and not otherPlayer:isAsleep() and isClient() then
+    if otherPlayer and not otherPlayer:isAsleep() and isClient() then
         local text = SearchPlayer.getContextOptionText(otherPlayer)
         local option = context:addOption(text, worldObjects, SearchPlayer.onContextSelected, playerObj, otherPlayer)
         if math.abs(playerObj:getX() - otherPlayer:getX()) > 2 or math.abs(playerObj:getY() - otherPlayer:getY()) > 2 then
