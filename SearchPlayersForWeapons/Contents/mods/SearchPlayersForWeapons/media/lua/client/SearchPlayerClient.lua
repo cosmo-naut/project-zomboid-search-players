@@ -6,8 +6,23 @@
 
 SearchPlayer = SearchPlayer or {}
 
+function SearchPlayer.isOtherContraband(item)
+    local vars = SandboxVars.SearchPlayer
+    local otherContraband = vars and vars.OtherContrabandItems or ''
+
+    local typeList = string.split(otherContraband, ';')
+    local fullType = item:getFullType()
+    for i = 1, #typeList do
+        if fullType == string.trim(typeList[i]) then
+            return true
+        end
+    end
+
+    return false
+end
+
 function SearchPlayer.predicateWeapon(item)
-    return item:IsWeapon()
+    return item:IsWeapon() or SearchPlayer.isOtherContraband(item)
     -- return item:IsWeapon() and item:getActualWeight() >= 1
 end
 

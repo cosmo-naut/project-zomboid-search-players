@@ -1,0 +1,9 @@
+VERSION = 1,
+
+option SearchPlayer.OtherContrabandItems
+{
+    type = string,
+    default =,
+    page = SearchPlayer,
+    translation = SearchPlayer_OtherContrabandItems,
+}
