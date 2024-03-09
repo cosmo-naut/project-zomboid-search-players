@@ -21,13 +21,19 @@ function SearchPlayer.isOtherContraband(item)
     return false
 end
 
-function SearchPlayer.predicateWeapon(item)
+function SearchPlayer.hasOtherContrabandConfigured()
+    local vars = SandboxVars.SearchPlayer
+    local value = vars and vars.OtherContrabandItems
+    return value and value ~= ''
+end
+
+function SearchPlayer.predicateContraband(item)
     return item:IsWeapon() or SearchPlayer.isOtherContraband(item)
     -- return item:IsWeapon() and item:getActualWeight() >= 1
 end
 
 function SearchPlayer.reportBeingSearched(player, otherPlayer)
-    player:Say("Being searched by " .. otherPlayer:getDisplayName())
+    player:Say(getText("UI_SearchedBy", otherPlayer:getDisplayName()))
 end
 
 local function OnServerCommand(module, command, args)
@@ -43,7 +49,7 @@ local function OnServerCommand(module, command, args)
         end
 
         local playerInv = player:getInventory();
-        local weapons = playerInv:getAllEval(SearchPlayer.predicateWeapon);
+        local weapons = playerInv:getAllEval(SearchPlayer.predicateContraband);
         SearchPlayer.reportBeingSearched(player, otherPlayer)
         print("Found " .. weapons:size() .. " weapons");
         for i=0,weapons:size()-1 do
