@@ -1,4 +1,11 @@
-function onSearchPlayerContextSelected(worldobjects, playerObj, otherPlayer)
+SearchPlayer = SearchPlayer or {}
+
+
+function SearchPlayer.getContextOptionText(otherPlayer)
+    return getText("UI_SearchStub", otherPlayer:getDisplayName())
+end
+
+function SearchPlayer.onContextSelected(worldobjects, playerObj, otherPlayer)
     print(playerObj:getDisplayName() .. " is searching " .. otherPlayer:getDisplayName());
     print(playerObj:getDisplayName() .. " : " .. playerObj:getOnlineID())
     print(otherPlayer:getDisplayName() .. " : " .. otherPlayer:getOnlineID())
@@ -7,33 +14,36 @@ function onSearchPlayerContextSelected(worldobjects, playerObj, otherPlayer)
     end
 end
 
-function searchPlayerContextOption(player, context, worldObjects)
+function SearchPlayer.createContextOption(player, context, worldObjects)
     local playerObj = getSpecificPlayer(player);
-    local playerInv = playerObj:getInventory();
-    
-    local otherPlayer = nil;
+
+    local otherPlayer;
 
     local square;
 
-    for i, v in ipairs(worldObjects) do
-        local movingObjects = v:getSquare():getMovingObjects()
+    for _, v in ipairs(worldObjects) do
         square = v:getSquare();
+        local movingObjects = square:getMovingObjects()
         for i = 0, movingObjects:size() - 1 do
             local o = movingObjects:get(i)
-            if instanceof(o, "IsoPlayer") then
+            if instanceof(o, "IsoPlayer") and o ~= playerObj then
                 otherPlayer = o;
                 break
             end
         end
     end
 
-    if otherplayer == nil then
-        for x=square:getX()-1,square:getX()+1 do
-            for y=square:getY()-1,square:getY()+1 do
-                local sq = getCell():getGridSquare(x,y,square:getZ());
+    if square and not otherPlayer then
+        local squareX = square:getX()
+        local squareY = square:getY()
+        local squareZ = square:getZ()
+        for x=squareX-1,squareX+1 do
+            for y=squareY-1,squareY+1 do
+                local sq = getCell():getGridSquare(x,y,squareZ);
                 if sq then
-                    for i=0,sq:getMovingObjects():size()-1 do
-                        local o = sq:getMovingObjects():get(i)
+                    local movingObjects = sq:getMovingObjects()
+                    for i=0,movingObjects:size()-1 do
+                        local o = movingObjects:get(i)
                         if instanceof(o, "IsoPlayer") and (o ~= playerObj) then
                             otherPlayer = o
                         end
@@ -43,9 +53,9 @@ function searchPlayerContextOption(player, context, worldObjects)
         end
     end
 
-    if otherPlayer and otherPlayer ~= playerObj and not otherPlayer:isAsleep() and isClient() then
-        local text = getText("UI_SearchStub", otherPlayer:getDisplayName());
-        local option = context:addOption(text, worldobjects, onSearchPlayerContextSelected, playerObj, otherPlayer)
+    if otherPlayer and not otherPlayer:isAsleep() and isClient() then
+        local text = SearchPlayer.getContextOptionText(otherPlayer)
+        local option = context:addOption(text, worldObjects, SearchPlayer.onContextSelected, playerObj, otherPlayer)
         if math.abs(playerObj:getX() - otherPlayer:getX()) > 2 or math.abs(playerObj:getY() - otherPlayer:getY()) > 2 then
             local tooltip = ISWorldObjectContextMenu.addToolTip();
             option.notAvailable = true;
@@ -55,4 +65,5 @@ function searchPlayerContextOption(player, context, worldObjects)
     end
 end
 
-Events.OnFillWorldObjectContextMenu.Add(searchPlayerContextOption)
+
+Events.OnFillWorldObjectContextMenu.Add(SearchPlayer.createContextOption)

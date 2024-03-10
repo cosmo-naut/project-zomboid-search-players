@@ -1,3 +1,4 @@
+SearchPlayer = SearchPlayer or {}
 SearchPlayerUI = ISPanel:derive("SearchPlayerUI");
 
 function SearchPlayerUI:initialise()
@@ -117,13 +118,16 @@ end
 
 function SearchPlayerUI:prerender()
     local z = 15;
-    local x = 10;
+    local suffix = self.wasContrabandSearch and "Contraband" or "Weapons"
+    local title = getText("UI_SearchingTitle" .. suffix)
+
     self:drawRect(0, 0, self.width, self.height, self.backgroundColor.a, self.backgroundColor.r, self.backgroundColor.g, self.backgroundColor.b);
-    self:drawText(getText("UI_Searching"), self.width/2 - (getTextManager():MeasureStringX(UIFont.Medium, getText("UI_Searching")) / 2), z, 1,1,1,1, UIFont.Medium);
+    self:drawText(title, self.width/2 - (getTextManager():MeasureStringX(UIFont.Medium, title) / 2), z, 1,1,1,1, UIFont.Medium);
+
     if self.foundAnything then
-        self:drawText(getText("UI_SearchingItemsFound"), self.foundItems.x, self.foundItems.y - 32, 1,1,1,1, UIFont.Small);
+        self:drawText(getText("UI_SearchingFound" .. suffix), self.foundItems.x, self.foundItems.y - 32, 1,1,1,1, UIFont.Small);
     else
-        self:drawText(getText("UI_SearchingNoItems"), self.foundItems.x, self.foundItems.y, 1,1,1,1, UIFont.Small);
+        self:drawText(getText("UI_SearchingNo" .. suffix), self.foundItems.x, self.foundItems.y, 1,1,1,1, UIFont.Small);
     end
     -- self:drawText(getText("IGUI_TradingUI_HisOffer", self.otherPlayer:getDisplayName()), self.hisOfferDatas.x, self.hisOfferDatas.y - 32, 1,1,1,1, UIFont.Small);
 end
@@ -153,6 +157,7 @@ function SearchPlayerUI:new(x, y, width, height, player, otherPlayer)
     o.otherPlayer = otherPlayer;
     o.moveWithMouse = true;
     o.foundAnything = false;
+    o.wasContrabandSearch = SearchPlayer.hasOtherContrabandConfigured()
     SearchPlayerUI.instance = o;
     return o;
 end

@@ -1,0 +1,6 @@
+Sandbox_EN = {
+    Sandbox_SearchPlayer = "Search Players For Weapons",
+
+    Sandbox_SearchPlayer_OtherContrabandItems = "Other Contraband Items",
+    Sandbox_SearchPlayer_OtherContrabandItems_tooltip = "A list of other item types to include when searching players, separated by semicolons (e.g. Base.Battery;Base.Bleach).",
+}
